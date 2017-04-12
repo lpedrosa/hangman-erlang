@@ -17,10 +17,10 @@ new(Tries, Word) when Tries > 0, length(Word) > 0 ->
     WordChars = sets:from_list(Word),
     #hangman{word = Word, word_chars = WordChars, tries = Tries}.
 
-guess(Char, Game = #hangman{state = continue}) ->
+guess(Game = #hangman{state = continue}, Char) ->
     NewGame = update_game(Char, Game),
     {NewGame#hangman.state, NewGame};
-guess(_Char, Game = #hangman{state = GameState}) ->
+guess(Game = #hangman{state = GameState}, _Char) ->
     {GameState, Game}.
 
 %%%===================================================================

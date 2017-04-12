@@ -10,27 +10,27 @@ run_test_() ->
 
 fail_till_lost() ->
     Game = hangman_game:new(1, "someWord"),
-    Res = hangman_game:guess($c, Game),
+    Res = hangman_game:guess(Game, $c),
     ?_assertMatch({lost, _}, Res).
 
 fail_continue() ->
     Game = hangman_game:new(2, "someWord"),
     %% should have one try left
-    Res = hangman_game:guess($c, Game),
+    Res = hangman_game:guess(Game, $c),
     ?_assertMatch({continue, _}, Res).
 
 guess_char() ->
     Game = hangman_game:new(1, "has_a_c"),
-    Res = hangman_game:guess($c, Game),
+    Res = hangman_game:guess(Game, $c),
     ?_assertMatch({continue, _}, Res).
 
 guess_and_win() ->
     Game = hangman_game:new(1, "c"),
-    Res = hangman_game:guess($c, Game),
+    Res = hangman_game:guess(Game, $c),
     ?_assertMatch({won, _}, Res).
 
 guess_finished() ->
     Game = hangman_game:new(1, "c"),
-    {_, FinishedGame} = hangman_game:guess($c, Game),
-    Res = hangman_game:guess($a, FinishedGame),
+    {_, FinishedGame} = hangman_game:guess(Game, $c),
+    Res = hangman_game:guess(FinishedGame, $a),
     ?_assertMatch({_, FinishedGame}, Res).
