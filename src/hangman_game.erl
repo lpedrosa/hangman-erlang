@@ -1,6 +1,6 @@
 -module(hangman_game).
 
--export([new/1,
+-export([new/2,
          guess/2]).
 
 -record(hangman, {word,
@@ -13,8 +13,7 @@
 %%% API
 %%%===================================================================
 
-new(Tries) when Tries > 0 ->
-    Word = random_word(words()),
+new(Tries, Word) when Tries > 0, length(Word) > 0 ->
     WordChars = sets:from_list(Word),
     #hangman{word = Word, word_chars = WordChars, tries = Tries}.
 
