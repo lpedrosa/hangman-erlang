@@ -9,28 +9,35 @@ run_test_() ->
      {"Guessing on a finished game should be a noop", guess_finished()}].
 
 fail_till_lost() ->
-    Game = hangman_game:new(1, "someWord"),
+    Word = "someWord",
+    Game = hangman_game:new(1, Word),
     Res = hangman_game:guess(Game, $c),
-    ?_assertMatch({lost, _}, Res).
+    ?_assertMatch({lost, Word, _}, Res).
 
 fail_continue() ->
     Game = hangman_game:new(2, "someWord"),
     %% should have one try left
     Res = hangman_game:guess(Game, $c),
-    ?_assertMatch({continue, _}, Res).
+    ?_assertMatch({miss, _}, Res).
 
 guess_char() ->
     Game = hangman_game:new(1, "has_a_c"),
     Res = hangman_game:guess(Game, $c),
-    ?_assertMatch({continue, _}, Res).
+    ?_assertMatch({hit, _}, Res).
 
 guess_and_win() ->
-    Game = hangman_game:new(1, "c"),
+    Word = "c",
+    Game = hangman_game:new(1, Word),
     Res = hangman_game:guess(Game, $c),
-    ?_assertMatch({won, _}, Res).
+    ?_assertMatch({won, Word, _}, Res).
 
 guess_finished() ->
     Game = hangman_game:new(1, "c"),
-    {_, FinishedGame} = hangman_game:guess(Game, $c),
+    {_, Word, FinishedGame} = hangman_game:guess(Game, $c),
     Res = hangman_game:guess(FinishedGame, $a),
-    ?_assertMatch({_, FinishedGame}, Res).
+    ?_assertMatch({_, Word, FinishedGame}, Res).
+
+give_up_result() ->
+    Game = hangman_game:new(3, "some_word"),
+    Res = hangman_game:give_up(Game),
+    ?_assertMatch({lost, word, _}, Res).

@@ -19,13 +19,25 @@ new(Tries, Word) when Tries > 0, length(Word) > 0 ->
 
 guess(Game = #hangman{state = continue}, Char) ->
     NewGame = update_game(Char, Game),
-    {NewGame#hangman.state, NewGame};
-guess(Game = #hangman{state = GameState}, _Char) ->
-    {GameState, Game}.
+    calculate_result(NewGame, Game);
+guess(Game = #hangman{state = _}, _Char) ->
+    calculate_result(Game, Game).
 
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+
+calculate_result(NextGame = #hangman{state = continue}, PrevGame) ->
+    NextTries = NextGame#hangman.tries,
+    PrevTries = PrevGame#hangman.tries,
+    if
+        NextTries < PrevTries ->
+            {miss, NextGame};
+        NextTries == PrevTries ->
+            {hit, NextGame}
+    end;
+calculate_result(NextGame = #hangman{state = State, word = Word}, _) ->
+    {State, Word, NextGame}.
 
 update_game(Char, Game = #hangman{guessed = Guessed, word_chars = WordChars}) ->
     % Always add new character to guessed
@@ -40,7 +52,6 @@ update_game(Char, Game = #hangman{guessed = Guessed, word_chars = WordChars}) ->
             NewTries = Game#hangman.tries - 1,
             check_lost(NewTries, Game)
     end.
-
 
 check_won(true, Game) ->
     update_state(won, Game);
