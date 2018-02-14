@@ -1,7 +1,8 @@
 -module(hangman_game).
 
 -export([new/2,
-         guess/2]).
+         guess/2,
+         info/1]).
 
 -record(hangman, {word,
                   word_chars,
@@ -23,6 +24,9 @@ guess(Game = #hangman{state = continue}, Char) ->
 guess(Game = #hangman{state = _}, _Char) ->
     calculate_result(Game, Game).
 
+info(#hangman{word = Word, tries = LivesLeft}) ->
+    {Word, LivesLeft, crap}.
+
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
@@ -37,7 +41,7 @@ calculate_result(NextGame = #hangman{state = continue}, PrevGame) ->
             {hit, NextGame}
     end;
 calculate_result(NextGame = #hangman{state = State, word = Word}, _) ->
-    {State, Word, NextGame}.
+    {State, NextGame}.
 
 update_game(Char, Game = #hangman{guessed = Guessed, word_chars = WordChars}) ->
     % Always add new character to guessed
