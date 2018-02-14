@@ -42,10 +42,6 @@ retrieve_info_new() ->
     Lives = 3,
     Word = "Hello",
     Game = hangman_game:new(Lives, Word),
-    {InfoWord, InfoLives, _} = hangman_game:info(Game),
-    ?_assertMatch({InfoWord, InfoLives}, {Word, Lives}).
+    Info = hangman_game:info(Game),
+    ?_assertMatch(Info, {continue, Lives, Word}).
 
-give_up_result() ->
-    Game = hangman_game:new(3, "some_word"),
-    Res = hangman_game:give_up(Game),
-    ?_assertMatch({lost, word, _}, Res).
